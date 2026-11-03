@@ -15,6 +15,20 @@ environment of the server process and never travel over the protocol.
 2. Add the server to your client with `uvx touai-mcp` (needs [uv](https://docs.astral.sh/uv/))
    or `pipx run touai-mcp`, using one of the methods below.
 
+### One command (recommended)
+
+Registers this server in every supported client on the machine (Cursor, Claude Code, Codex,
+Claude Desktop, Windsurf) and installs the [TouAI Agent Skills](https://github.com/touai/touai-skills)
+as well. Run it yourself or paste it to your agent:
+
+```bash
+npx -y touai@latest setup
+```
+
+If `TOUAI_ACCESS_KEY_ID` / `TOUAI_SECRET_KEY` are in your environment they are written into the
+config; otherwise it leaves placeholders and tells you to create a key pair in the console
+(Project → API Keys), export both, and run it again.
+
 ### Let your agent do it
 
 Paste this into Cursor, Claude Code or Codex:
