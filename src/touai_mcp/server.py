@@ -84,7 +84,7 @@ def _hint_for(exc: Any) -> str:
         return f"this API key's role is {exc.api_key_role}, the call needs {exc.required_role}"
     if isinstance(exc, touai.AuthenticationError):
         return "check TOUAI_ACCESS_KEY_ID / TOUAI_SECRET_KEY"
-    if isinstance(exc, touai.PollTimeoutError):
+    if isinstance(exc, touai.TimeoutError):
         return "the job is still running server-side; call the matching *_status tool later"
     if isinstance(exc, touai.RateLimitError):
         return f"retry after {exc.retry_after or 'a few'} seconds"
@@ -306,7 +306,7 @@ def build_server() -> MCPServer:
         task = _run(client.web_access.deep_crawl, url, **kwargs)
         try:
             status = _wait_crawl(client, task.task_id, timeout_seconds)
-        except touai.PollTimeoutError:
+        except touai.TimeoutError:
             return {
                 "status": "running",
                 "task_id": task.task_id,
@@ -362,7 +362,7 @@ def build_server() -> MCPServer:
             job = client.deep_research.wait_for_job(
                 job.job_id, poll_interval=10, timeout=timeout_seconds
             )
-        except touai.PollTimeoutError:
+        except touai.TimeoutError:
             return {
                 "status": "running",
                 "job_id": job.job_id,
@@ -419,7 +419,7 @@ def build_server() -> MCPServer:
             job = _run(u.jobs.create, source={"source_type": "url", "url": path_or_url})
             try:
                 job = u.jobs.wait_until_complete(job.job_id, timeout=timeout_seconds)
-            except touai.PollTimeoutError:
+            except touai.TimeoutError:
                 return {
                     "status": "running",
                     "job_id": job.job_id,
@@ -438,7 +438,7 @@ def build_server() -> MCPServer:
         _run(u.files.process, f.file_id)
         try:
             u.files.wait_until_complete(f.file_id, timeout=timeout_seconds)
-        except touai.PollTimeoutError:
+        except touai.TimeoutError:
             return {
                 "status": "running",
                 "file_id": f.file_id,
