@@ -132,7 +132,7 @@ async def test_balance_wallet_dict_is_flattened(server, monkeypatch):
     """On the real API gate.balance is the wallet block; the tool exposes a number at the top."""
     gate = _ns(
         requires_topup=False,
-        balance={"balance": Decimal("8480.92"), "balance_display": "8480.92", "held_credits": 0},
+        balance={"balance": "8480.92", "balance_display": "8480.92", "held_credits": 0},
         overdraft_limit=0,
         product_access=None,
     )

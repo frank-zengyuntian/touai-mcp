@@ -119,6 +119,16 @@ def _num(v: Any) -> Any:
     return float(v) if isinstance(v, Decimal) else v
 
 
+def _money(v: Any) -> Any:
+    """Wallet amounts arrive as Decimal, int or a numeric string; hand the agent a float."""
+    if v is None or isinstance(v, bool):
+        return v
+    try:
+        return float(Decimal(str(v)))
+    except (ArithmeticError, ValueError):
+        return v
+
+
 def _clip(text: str | None, limit: int) -> str:
     text = text or ""
     return (
@@ -191,9 +201,9 @@ def build_server() -> MCPServer:
         wallet = gate.balance if isinstance(gate.balance, dict) else {"balance": gate.balance}
         out: dict[str, Any] = {
             "requires_topup": gate.requires_topup,
-            "balance": _num(wallet.get("balance")),
+            "balance": _money(wallet.get("balance")),
             "balance_display": wallet.get("balance_display"),
-            "held_credits": _num(wallet.get("held_credits")),
+            "held_credits": _money(wallet.get("held_credits")),
             "overdraft_limit": _num(gate.overdraft_limit),
             "blocked_products": list(
                 getattr(gate.product_access, "blocked_service_types", []) or []
