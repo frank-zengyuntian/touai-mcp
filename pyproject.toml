@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "touai-mcp"
+dynamic = ["version"]
+description = "MCP server for the TouAI platform — web access, deep research, document parsing, knowledge base, connectors, storage and billing tools for Cursor, Claude Code, Codex and other MCP clients."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+authors = [{ name = "Regressor Inc.", email = "support@tou.ai" }]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "touai>=2.0.0rc8,<3",
+    "mcp>=2.0,<3",
+]
+keywords = ["touai", "mcp", "model-context-protocol", "agent", "rag", "research"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=1.0.0",
+    "ruff>=0.4.0",
+]
+
+[project.scripts]
+touai-mcp = "touai_mcp.server:main"
+
+[project.urls]
+Homepage = "https://tou.ai"
+Documentation = "https://docs.tou.ai/sdk/python"
+Support = "https://tou.ai/contact"
+
+[tool.hatch.version]
+path = "src/touai_mcp/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/touai_mcp"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/touai_mcp", "/README.md", "/LICENSE"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = ["E501"]  # long tool descriptions; ruff format handles layout
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
