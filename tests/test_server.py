@@ -128,6 +128,34 @@ async def test_balance_decimal_to_float(server, monkeypatch):
     assert data["balance"] == 12.5 and "note" in data
 
 
+async def test_balance_wallet_dict_is_flattened(server, monkeypatch):
+    """On the real API gate.balance is the wallet block; the tool exposes a number at the top."""
+    gate = _ns(
+        requires_topup=False,
+        balance={"balance": Decimal("8480.92"), "balance_display": "8480.92", "held_credits": 0},
+        overdraft_limit=0,
+        product_access=None,
+    )
+
+    def balance():
+        raise PermissionError("not admin")
+
+    fake = _ns(billing=_ns(credits=_ns(spendability=lambda: gate, balance=balance)))
+    monkeypatch.setattr(srv, "get_client", lambda: fake)
+    data = _structured(await server.call_tool("touai_balance", {}))
+    assert data["balance"] == 8480.92
+    assert data["balance_display"] == "8480.92"
+
+
+async def test_placeholder_credentials_count_as_missing(server, monkeypatch):
+    monkeypatch.setenv("TOUAI_ACCESS_KEY_ID", "ak_live_...")
+    monkeypatch.setenv("TOUAI_SECRET_KEY", "sk_live_...")
+    monkeypatch.delenv("TOUAI_BASE_URL", raising=False)
+    monkeypatch.setattr(srv, "_client", None)
+    with pytest.raises(ToolError, match="not configured"):
+        await server.call_tool("touai_balance", {})
+
+
 # --------------------------------------------------------------------------- helpers
 
 

@@ -31,15 +31,19 @@ _client = None
 _client_lock = threading.Lock()
 
 
+def _credential(name: str) -> str:
+    """The env var's value, or "" when unset or still the installer's placeholder (``ak_live_...``)."""
+    value = os.environ.get(name, "").strip()
+    return "" if value.endswith("...") else value
+
+
 def get_client():
     """Lazily build one TouAI client per process."""
     global _client
     if _client is None:
         with _client_lock:
             if _client is None:
-                if not os.environ.get("TOUAI_ACCESS_KEY_ID") or not os.environ.get(
-                    "TOUAI_SECRET_KEY"
-                ):
+                if not _credential("TOUAI_ACCESS_KEY_ID") or not _credential("TOUAI_SECRET_KEY"):
                     console = (
                         os.environ.get("TOUAI_BASE_URL", "").strip().rstrip("/")
                         or "https://platform.tou.ai"
@@ -50,11 +54,15 @@ def get_client():
                         "project; (2) go to Project → API Keys and create a key (access key id "
                         "ak_… and secret sk_…, shown once); (3) put TOUAI_ACCESS_KEY_ID and "
                         "TOUAI_SECRET_KEY into the touai MCP server's env in their client config "
-                        "and restart the client. Never ask them to paste the secret into the chat."
+                        "(or export both and run `uvx touai-setup` again) and restart the client. "
+                        "Never ask them to paste the secret into the chat."
                     )
                 from touai import TouAI
 
-                _client = TouAI()
+                _client = TouAI(
+                    access_key_id=_credential("TOUAI_ACCESS_KEY_ID"),
+                    secret_key=_credential("TOUAI_SECRET_KEY"),
+                )
     return _client
 
 
@@ -179,9 +187,13 @@ def build_server() -> MCPServer:
     def touai_balance() -> dict[str, Any]:
         client = get_client()
         gate = _run(client.billing.credits.spendability)
+        # gate.balance is the wallet block (dict) on the real API; keep a number at the top level
+        wallet = gate.balance if isinstance(gate.balance, dict) else {"balance": gate.balance}
         out: dict[str, Any] = {
             "requires_topup": gate.requires_topup,
-            "balance": _num(gate.balance),
+            "balance": _num(wallet.get("balance")),
+            "balance_display": wallet.get("balance_display"),
+            "held_credits": _num(wallet.get("held_credits")),
             "overdraft_limit": _num(gate.overdraft_limit),
             "blocked_products": list(
                 getattr(gate.product_access, "blocked_service_types", []) or []
