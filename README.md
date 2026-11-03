@@ -13,7 +13,26 @@ environment of the server process and never travel over the protocol.
 1. Create a project API key in the TouAI console (Project → API Keys). You get an access key
    id (`ak_live_…`) and a secret (`sk_live_…`).
 2. Add the server to your client with `uvx touai-mcp` (needs [uv](https://docs.astral.sh/uv/))
-   or `pipx run touai-mcp`.
+   or `pipx run touai-mcp`, using one of the methods below.
+
+### Let your agent do it
+
+Paste this into Cursor, Claude Code or Codex:
+
+```
+Add the "touai" MCP server to my config: command `uvx`, args `["touai-mcp"]`,
+env `TOUAI_ACCESS_KEY_ID` and `TOUAI_SECRET_KEY`. Leave the two values as placeholders;
+I will fill them in myself. Then tell me where the config file is.
+```
+
+The agent writes the entry; you put the key pair in and restart the client. Never paste the
+secret into the chat.
+
+### Cursor — one click
+
+[![Add touai MCP server to Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=touai&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJ0b3VhaS1tY3AiXSwiZW52Ijp7IlRPVUFJX0FDQ0VTU19LRVlfSUQiOiJha19saXZlXy4uLiIsIlRPVUFJX1NFQ1JFVF9LRVkiOiJza19saXZlXy4uLiJ9fQ==)
+
+Replace the two placeholder values with your key pair after installing.
 
 ### Cursor — `~/.cursor/mcp.json` (or `.cursor/mcp.json` in a project)
 
