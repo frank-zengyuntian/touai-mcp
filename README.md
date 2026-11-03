@@ -10,8 +10,9 @@ environment of the server process and never travel over the protocol.
 
 ## Setup
 
-1. Create a project API key in the TouAI console (Project → API Keys). You get an access key
-   id (`ak_live_…`) and a secret (`sk_live_…`).
+1. Create a project API key: open the console at <https://platform.tou.ai/>, sign in, open your
+   project, **Project → API Keys**, create a key. You get an access key id (`ak_live_…`) and a
+   secret (`sk_live_…`, shown once).
 2. Add the server to your client with `uvx touai-mcp` (needs [uv](https://docs.astral.sh/uv/))
    or `pipx run touai-mcp`, using one of the methods below.
 

@@ -59,7 +59,14 @@ async def test_missing_credentials_is_a_tool_error(server, monkeypatch):
     monkeypatch.delenv("TOUAI_ACCESS_KEY_ID", raising=False)
     monkeypatch.delenv("TOUAI_SECRET_KEY", raising=False)
     monkeypatch.setattr(srv, "_client", None)
-    with pytest.raises(ToolError, match="TOUAI_ACCESS_KEY_ID"):
+    monkeypatch.delenv("TOUAI_BASE_URL", raising=False)
+    with pytest.raises(ToolError, match="TOUAI_ACCESS_KEY_ID") as ei:
+        await server.call_tool("touai_balance", {})
+    assert "https://platform.tou.ai/" in str(ei.value)
+    assert "API Keys" in str(ei.value)
+
+    monkeypatch.setenv("TOUAI_BASE_URL", "https://example.test/")
+    with pytest.raises(ToolError, match=r"https://example\.test/ ,"):
         await server.call_tool("touai_balance", {})
 
 

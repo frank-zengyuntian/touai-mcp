@@ -40,10 +40,17 @@ def get_client():
                 if not os.environ.get("TOUAI_ACCESS_KEY_ID") or not os.environ.get(
                     "TOUAI_SECRET_KEY"
                 ):
+                    console = (
+                        os.environ.get("TOUAI_BASE_URL", "").strip().rstrip("/")
+                        or "https://platform.tou.ai"
+                    ) + "/"
                     raise ToolError(
-                        "TouAI credentials are not configured. Set TOUAI_ACCESS_KEY_ID and "
-                        "TOUAI_SECRET_KEY in the MCP server's environment (create a project API "
-                        "key in the TouAI console under Project → API Keys)."
+                        "TouAI credentials are not configured. Tell the user to: "
+                        f"(1) open the TouAI console at {console} , sign in and open their "
+                        "project; (2) go to Project → API Keys and create a key (access key id "
+                        "ak_… and secret sk_…, shown once); (3) put TOUAI_ACCESS_KEY_ID and "
+                        "TOUAI_SECRET_KEY into the touai MCP server's env in their client config "
+                        "and restart the client. Never ask them to paste the secret into the chat."
                     )
                 from touai import TouAI
 
