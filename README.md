@@ -22,11 +22,12 @@ Paste this into Cursor, Claude Code or Codex:
 ```
 Add the "touai" MCP server to my config: command `uvx`, args `["touai-mcp"]`,
 env `TOUAI_ACCESS_KEY_ID` and `TOUAI_SECRET_KEY`. Leave the two values as placeholders;
-I will fill them in myself. Then tell me where the config file is.
+I will fill them in myself. Then tell me where the config file is and remind me that the
+key pair comes from the TouAI console under Project → API Keys.
 ```
 
-The agent writes the entry; you put the key pair in and restart the client. Never paste the
-secret into the chat.
+The agent writes the entry and tells you where to get the key pair; you fill in the two
+values and restart the client. Never paste the secret into the chat.
 
 ### Cursor — one click
 
