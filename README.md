@@ -82,14 +82,17 @@ call the matching `*_status` tool instead of re-submitting.
 
 ```bash
 uv venv && uv pip install -e ".[dev]"
-TOUAI_ACCESS_KEY_ID=… TOUAI_SECRET_KEY=… uv run touai-mcp     # stdio; point your client at this command
-pytest
+# until `touai` is on PyPI, install the SDK from a sibling checkout first:
+#   uv pip install ../touai-python
+.venv/bin/pytest
+TOUAI_ACCESS_KEY_ID=… TOUAI_SECRET_KEY=… .venv/bin/touai-mcp   # stdio; point your client at this command
 ```
 
-While developing, point a client at the checkout instead of `uvx`:
+While developing, point a client at the checkout's venv instead of `uvx` (`uv run --directory …`
+only works once `touai` resolves from PyPI):
 
 ```json
-{ "command": "uv", "args": ["run", "--directory", "/path/to/touai-mcp", "touai-mcp"], "env": { … } }
+{ "command": "/path/to/touai-mcp/.venv/bin/touai-mcp", "env": { … } }
 ```
 
 ## Agent Skills
