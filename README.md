@@ -17,12 +17,13 @@ environment of the server process and never travel over the protocol.
 
 ### One command (recommended)
 
-Registers this server in every supported client on the machine (Cursor, Claude Code, Codex,
-Claude Desktop, Windsurf) and installs the [TouAI Agent Skills](https://github.com/touai/touai-skills)
-as well. Run it yourself or paste it to your agent:
+[`touai-setup`](https://github.com/touai/touai-setup) registers this server in every supported
+client on the machine (Cursor, Claude Code, Codex, Claude Desktop, Windsurf) and installs the
+[TouAI Agent Skills](https://github.com/touai/touai-skills) as well. Run it yourself or paste it
+to your agent:
 
 ```bash
-npx -y touai@latest setup
+uvx touai-setup
 ```
 
 If `TOUAI_ACCESS_KEY_ID` / `TOUAI_SECRET_KEY` are in your environment they are written into the
